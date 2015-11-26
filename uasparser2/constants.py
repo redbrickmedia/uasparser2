@@ -1,7 +1,7 @@
 VERSION = '0.3'
 
-INI_URL = 'http://user-agent-string.info/rpc/get_data.php?key=free&format=ini'
-INFO_URL = 'http://user-agent-string.info'
+INI_URL = 'http://data.udger.com/[ACCESS_KEY]/udgerdata_old.ini'
+INFO_URL = 'http://udger.com'
 
 DEFAULT_TMP_DIR = '/tmp'
 

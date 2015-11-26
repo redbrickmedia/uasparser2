@@ -28,7 +28,7 @@ class UASException(Exception):
 
 class UASParser(object):
 
-    def __init__(self, cache_dir=None, mem_cache_size=1000, cache_ttl=None):
+    def __init__(self, cache_dir=None, mem_cache_size=1000, cache_ttl=None, access_key=None):
         """
         Args:
             cache_dir: String, path to the cache dir for useragent parsing data, default is /tmp.
@@ -45,6 +45,8 @@ class UASParser(object):
 
         self._ini_data_loader = IniDataLoader()
         self._uas_matcher = None
+
+        self._access_key = access_key
 
         self._load_data()
 
@@ -110,11 +112,11 @@ class UASParser(object):
 
     def update_data(self):
         """
-        Fetch useragent parsing data from http://user-agent-string.info/ and update local cache
+        Fetch useragent parsing data from http://udger.com/ and update local cache
         """
         try:
             cache_file = open(self._cache_file_name, 'wb')
-            ini_file = self._fetch_url(INI_URL)
+            ini_file = self._fetch_url(INI_URL.replace("[ACCESS_KEY]", self._access_key))
             ini_data = self._ini_data_loader.parse_ini_file(ini_file)
         except:
             raise UASException("Failed to download cache data")
