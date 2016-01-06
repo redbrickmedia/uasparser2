@@ -28,13 +28,15 @@ class UASException(Exception):
 
 class UASParser(object):
 
-    def __init__(self, cache_dir=None, mem_cache_size=1000, cache_ttl=None, access_key=None):
+    def __init__(self, cache_dir=None, mem_cache_size=1000, cache_ttl=None, access_key=None, auto_update=True):
         """
         Args:
             cache_dir: String, path to the cache dir for useragent parsing data, default is /tmp.
             cache_ttl: Int, ttl for useragent parsing data cache in seconds, default is never.
                        Cache ttl is only checked on init when data is loaded.
             mem_cache_size: Int, number of parsed useragents to cache, default is 1000.
+            access_key - for udger
+            auto_update - if False, this will raise an error if there is NOT a cached file
         """
 
         self._cache_file_name = self._get_cache_file_name(cache_dir)
@@ -47,6 +49,7 @@ class UASParser(object):
         self._uas_matcher = None
 
         self._access_key = access_key
+        self._auto_update = auto_update
 
         self._load_data()
 
@@ -114,6 +117,7 @@ class UASParser(object):
         """
         Fetch useragent parsing data from http://udger.com/ and update local cache
         """
+
         try:
             cache_file = open(self._cache_file_name, 'wb')
             ini_file = self._fetch_url(INI_URL.replace("[ACCESS_KEY]", self._access_key))
@@ -138,6 +142,8 @@ class UASParser(object):
         if self._check_cache():
             self._load_cache()
         else:
+            if self._auto_update is False:
+                raise UASException("Auto-update is disabled - could not load cache.")
             self.update_data()
 
 
